@@ -1,10 +1,13 @@
 import express from "express";
 import { createContact, deleteContact, getContact, getContacts, updateContact } from "../controllers/contactController"
-import { errorHandler } from "../middlewares/errorHandler"
+import { validateToken } from "../middlewares/validateTokenHandler";
 export default (router: express.Router) => {
+    // Validate before give actions
+    router.use(validateToken)
+
     router.get('/api/contacts', getContacts)
 
-    router.post('/api/contacts', createContact, errorHandler)
+    router.post('/api/contacts', createContact)
 
     router.get('/api/contacts/:id', getContact)
 

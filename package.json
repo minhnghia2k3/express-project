@@ -11,13 +11,17 @@
   "author": "minhnghia2k3",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/mongoose": "^5.11.97",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
