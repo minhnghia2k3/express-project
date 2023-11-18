@@ -1,13 +1,18 @@
 import express from "express";
+import Contact from "../models/contactModel"
 /**
 * @desc Get all Contacts
 * @route GET /api/contacts
 * @access public
 */
-export const getContacts = (req: express.Request, res: express.Response) => {
-
-
-    return res.status(200).json("get contacts");
+export const getContacts = async (req: express.Request, res: express.Response) => {
+    try {
+        const contacts = await Contact.find()
+        return res.status(200).json(contacts);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ "message": "Error when get all contacts!" })
+    }
 }
 
 /**
@@ -15,15 +20,24 @@ export const getContacts = (req: express.Request, res: express.Response) => {
 * @route POST /api/contacts
 * @access public
 */
-export const createContact = (req: express.Request, res: express.Response) => {
-    const { name, email, phone } = req.body;
-    if (!name || !email || !phone) {
-        res.status(400)
-        throw new Error("Missing parameters!")
-    }
+export const createContact = async (req: express.Request, res: express.Response) => {
+    try {
+        const { name, email, phone } = req.body;
+        if (!name || !email || !phone) {
+            return res.status(400).json({ "message": "Missing parameters!" })
+        }
 
-    // 201: Resource created
-    return res.status(201).json("get contacts");
+        const contact = await Contact.create({
+            name,
+            email,
+            phone
+        })
+
+        // 201: Resource created
+        return res.status(201).json(contact);
+    } catch (err) {
+        return res.status(500).json({ "message": "Error when creating contact!" })
+    }
 }
 
 /**
@@ -31,14 +45,20 @@ export const createContact = (req: express.Request, res: express.Response) => {
 * @route GET /api/contacts/:id
 * @access public
 */
-export const getContact = (req: express.Request, res: express.Response) => {
+export const getContact = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params
+        const contact = await Contact.findById(id)
+
+        if (!contact) {
+            return res.status(404).json({ "message": "Contact not found!" })
+        }
+
+        return res.status(200).json(contact)
     } catch (err) {
-
+        console.log(err)
+        return res.status(400).json({ "message": "Error when get contact!" })
     }
-
-    return res.status(200).json("get contacts");
 }
 
 /**
@@ -46,10 +66,24 @@ export const getContact = (req: express.Request, res: express.Response) => {
 * @route PUT /api/contacts/:id
 * @access public
 */
-export const updateContact1 = (req: express.Request, res: express.Response) => {
+export const updateContact = async (req: express.Request, res: express.Response) => {
+    try {
+        const { id } = req.params
+        const { phone, email, name } = req.body
+        const updatedContact = await Contact.findByIdAndUpdate(id, {
+            phone: phone,
+            email: email,
+            name: name
+        })
+        if (!updatedContact) {
+            return res.status(404).json({ "message": "Contact not found!" })
+        }
+        return res.status(200).json(updatedContact);
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ "message": "Error when update contact!" })
+    }
 
-
-    return res.status(200).json("get contacts");
 }
 
 /**
@@ -57,8 +91,17 @@ export const updateContact1 = (req: express.Request, res: express.Response) => {
 * @route Delete /api/contacts/:id
 * @access public
 */
-export const deleteContact = (req: express.Request, res: express.Response) => {
+export const deleteContact = async (req: express.Request, res: express.Response) => {
+    try {
+        const { id } = req.params
+        const contact = await Contact.findByIdAndDelete(id)
+        if (!contact) {
+            return res.status(404).json({ "message": "Contact not found!" })
+        }
+        return res.status(200).json(contact);
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ "message": "Error when delete contact!" })
+    }
 
-
-    return res.status(200).json("get contacts");
 }

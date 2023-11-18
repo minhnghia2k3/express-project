@@ -2,6 +2,7 @@ import express from "express"
 import { constants } from "../constants"
 
 export const errorHandler = (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.log('--- err: ', err)
     const statusCode = res.statusCode ? res.statusCode : 500
     switch (statusCode) {
         case constants.VALIDATION_ERROR:
@@ -25,8 +26,7 @@ export const errorHandler = (err: any, req: express.Request, res: express.Respon
             break;
 
         default:
+            console.log("No error!");
             break;
     }
-
-    console.log('error')
 } 
